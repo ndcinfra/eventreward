@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/astaxie/beego/logs"
+	"github.com/ndcinfra/eventreward/libs"
 	"github.com/ndcinfra/eventreward/models"
 
 	"github.com/astaxie/beego/orm"
@@ -46,28 +47,26 @@ func GetSendEmailReward() {
 
 		logs.Info("Success MakeCoupon: ", len(rewardsIDs))
 
-		/*
-			// get GetSendEmailReward again with serial.
-			eventRewards, err = models.GetSendEmailReward()
-			if err != nil {
-				logs.Error("Error ReGetSendEmailReward: ", err)
-				return
-			}
+		// get GetSendEmailReward again with serial.
+		eventRewards, err = models.GetSendEmailReward()
+		if err != nil {
+			logs.Error("Error ReGetSendEmailReward: ", err)
+			return
+		}
 
-			logs.Info("Success ReGetSendEmailReward: ", len(eventRewards))
+		logs.Info("Success ReGetSendEmailReward: ", len(eventRewards))
 
-			// bulk update
-			err = models.UpdateEventRewardsDone(rewardsIDs)
-			if err != nil {
-				logs.Error("Error UpdateEventRewardsDone: ", err)
-				return
-			}
+		// bulk update
+		err = models.UpdateEventRewardsDone(rewardsIDs)
+		if err != nil {
+			logs.Error("Error UpdateEventRewardsDone: ", err)
+			return
+		}
 
-			logs.Info("Success UpdateEventRewardsDone. IDs: ", rewardsIDs)
+		logs.Info("Success UpdateEventRewardsDone. IDs: ", rewardsIDs)
 
-			// send email
-			go libs.MakeEmail(eventRewards)
-		*/
+		// send email
+		go libs.MakeEmail(eventRewards)
 
 	} else {
 		logs.Info("no data GetSendEmailReward")
@@ -107,7 +106,7 @@ func main() {
 	//i := 1
 	//for {
 
-	logs.Info("start: ", i)
+	//logs.Info("start: ", i)
 	start := time.Now()
 	GetSendEmailReward()
 	logs.Info("Total Time: ", time.Since(start))

@@ -163,8 +163,8 @@ func UpdateEventRewardsDone(ids []int) error {
 	}
 
 	o := orm.NewOrm()
-	sql := "UPDATE event_rewards SET is_done = true where \"ID\" in ( " + inSQL + " )"
-	_, err := o.Raw(sql).Exec()
+	sql := "UPDATE event_rewards SET is_done = true, send_at = ? where \"ID\" in ( " + inSQL + " )"
+	_, err := o.Raw(sql, time.Now()).Exec()
 	if err != nil {
 		logs.Error("error", "Error update done event_rewards: ", err)
 		return err
