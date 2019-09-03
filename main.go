@@ -104,15 +104,15 @@ func main() {
 	// TODO: 포인터 이용
 
 	//i := 1
-	//for {
+	for {
 
-	//logs.Info("start: ", i)
-	start := time.Now()
-	GetSendEmailReward()
-	logs.Info("Total Time: ", time.Since(start))
+		//logs.Info("start: ", i)
+		start := time.Now()
+		GetSendEmailReward()
+		logs.Info("Total Time: ", time.Since(start))
 
-	//i++
-	//time.Sleep(30 * time.Minute)
-	//}
+		//i++
+		//time.Sleep(30 * time.Minute)
+	}
 
 }
