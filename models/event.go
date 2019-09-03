@@ -89,8 +89,8 @@ func GetSendEmailReward() ([]EventRewards, error) {
 		" FROM event_rewards " +
 		" WHERE is_done = false " +
 		" AND event_reward_type = 1 " + // 1: send email with cououpon serial
-		" order by create_at asc " +
-		" limit 50 "
+		" order by create_at asc " // +
+		// " limit 50 "
 
 	_, err := o.Raw(sql).QueryRows(&eventRewards)
 	return eventRewards, err
