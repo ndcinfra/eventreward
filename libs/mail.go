@@ -87,7 +87,7 @@ func sendEmail(e *SendEmailInfo) {
 	SMTPPASS := os.Getenv("SMTPPASS")
 
 	m := gomail.NewMessage()
-	m.SetHeader("From", "do-not-reply@naddic.com")
+	m.SetHeader("From", "th@closerscs.com")
 	m.SetHeader("To", e.Email)
 	m.SetHeader("Subject", e.Title)
 	m.SetBody("text/html", e.Body)
