@@ -49,7 +49,6 @@ func GetSendEmailReward() {
 	*/
 
 	// Step 2
-
 	// get GetSendEmailReward again with serial.
 	eventRewards, err = models.GetSendEmailReward()
 	if err != nil {
