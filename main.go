@@ -51,7 +51,7 @@ func GetSendEmailReward() {
 	// Step 2
 	// get GetSendEmailReward again with serial.
 	var eventRewards []models.EventRewards
-	eventRewards, err = models.GetSendEmailReward()
+	eventRewards, err := models.GetSendEmailReward()
 	if err != nil {
 		logs.Error("Error ReGetSendEmailReward: ", err)
 		return
