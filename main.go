@@ -4,7 +4,6 @@ import (
 	"time"
 
 	"github.com/astaxie/beego/logs"
-	"github.com/ndcinfra/eventreward/libs"
 	"github.com/ndcinfra/eventreward/models"
 
 	"github.com/astaxie/beego/orm"
@@ -28,6 +27,7 @@ import (
 
 // GetSendEmailReward ...
 func GetSendEmailReward() {
+	// Step 1
 	var eventRewards []models.EventRewards
 	eventRewards, err := models.GetSendEmailReward()
 	if err != nil {
@@ -37,20 +37,16 @@ func GetSendEmailReward() {
 
 	logs.Info("Success GetSendEmailReward: ", len(eventRewards))
 
-	// make coupon and coupon_send_history
-	if len(eventRewards) > 0 {
-		/*
-			rewardsIDs, err := MakeCoupon(eventRewards)
-			if err != nil {
-				logs.Error("Error MakeCoupon: ", err)
-				return
-			}
+	rewardsIDs, err := MakeCoupon(eventRewards)
+	if err != nil {
+		logs.Error("Error MakeCoupon: ", err)
+		return
+	}
 
-			logs.Info("Success MakeCoupon: ", len(rewardsIDs))
-		*/
+	logs.Info("Success MakeCoupon: ", len(rewardsIDs))
 
-		// Step 2
-
+	// Step 2
+	/*
 		// get GetSendEmailReward again with serial.
 		eventRewards, err = models.GetSendEmailReward()
 		if err != nil {
@@ -61,25 +57,63 @@ func GetSendEmailReward() {
 		logs.Info("Success ReGetSendEmailReward: ", len(eventRewards))
 
 		libs.MakeEmail(eventRewards)
+	*/
 
-		// bulk update
-		/*
-			err = models.UpdateEventRewardsDone(rewardsIDs)
+	/*
+		var eventRewards []models.EventRewards
+		eventRewards, err := models.GetSendEmailReward()
+		if err != nil {
+			logs.Error("Error GetSendEmailReward: ", err)
+			return
+		}
+
+		logs.Info("Success GetSendEmailReward: ", len(eventRewards))
+
+		// make coupon and coupon_send_history
+		//if len(eventRewards) > 0 {
+
+			rewardsIDs, err := MakeCoupon(eventRewards)
 			if err != nil {
-				logs.Error("Error UpdateEventRewardsDone: ", err)
+				logs.Error("Error MakeCoupon: ", err)
 				return
 			}
 
-			logs.Info("Success UpdateEventRewardsDone. IDs: ", rewardsIDs)
-		*/
+			logs.Info("Success MakeCoupon: ", len(rewardsIDs))
+	*/
 
-		// send email
-		// go libs.MakeEmail(eventRewards)
+	// Step 2
 
-	} else {
-		logs.Info("no data GetSendEmailReward")
-		return
-	}
+	// get GetSendEmailReward again with serial.
+	/*
+		eventRewards, err = models.GetSendEmailReward()
+		if err != nil {
+			logs.Error("Error ReGetSendEmailReward: ", err)
+			return
+		}
+
+		logs.Info("Success ReGetSendEmailReward: ", len(eventRewards))
+
+		libs.MakeEmail(eventRewards)
+	*/
+
+	// bulk update
+	/*
+		err = models.UpdateEventRewardsDone(rewardsIDs)
+		if err != nil {
+			logs.Error("Error UpdateEventRewardsDone: ", err)
+			return
+		}
+
+		logs.Info("Success UpdateEventRewardsDone. IDs: ", rewardsIDs)
+	*/
+
+	// send email
+	// go libs.MakeEmail(eventRewards)
+
+	//} else {
+	//logs.Info("no data GetSendEmailReward")
+	//return
+	//}
 
 }
 
