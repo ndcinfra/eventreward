@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/astaxie/beego/logs"
+	"github.com/ndcinfra/eventreward/libs"
 	"github.com/ndcinfra/eventreward/models"
 
 	"github.com/astaxie/beego/orm"
@@ -38,28 +39,28 @@ func GetSendEmailReward() {
 
 	// make coupon and coupon_send_history
 	if len(eventRewards) > 0 {
-		rewardsIDs, err := MakeCoupon(eventRewards)
-		if err != nil {
-			logs.Error("Error MakeCoupon: ", err)
-			return
-		}
-
-		logs.Info("Success MakeCoupon: ", len(rewardsIDs))
-
-		// Step 2
-
 		/*
-			// get GetSendEmailReward again with serial.
-			eventRewards, err = models.GetSendEmailReward()
+			rewardsIDs, err := MakeCoupon(eventRewards)
 			if err != nil {
-				logs.Error("Error ReGetSendEmailReward: ", err)
+				logs.Error("Error MakeCoupon: ", err)
 				return
 			}
 
-			logs.Info("Success ReGetSendEmailReward: ", len(eventRewards))
-
-			libs.MakeEmail(eventRewards)
+			logs.Info("Success MakeCoupon: ", len(rewardsIDs))
 		*/
+
+		// Step 2
+
+		// get GetSendEmailReward again with serial.
+		eventRewards, err = models.GetSendEmailReward()
+		if err != nil {
+			logs.Error("Error ReGetSendEmailReward: ", err)
+			return
+		}
+
+		logs.Info("Success ReGetSendEmailReward: ", len(eventRewards))
+
+		libs.MakeEmail(eventRewards)
 
 		// bulk update
 		/*
