@@ -81,7 +81,7 @@ func MakeEmail(er []models.EventRewards) {
 			logs.Error("send email error: ", err, sei.Email, sei.Displayname)
 		} else {
 			// DB update
-			err := UpdateEventRewardsDoneOne(er[i].ID)
+			err := models.UpdateEventRewardsDoneOne(er[i].ID)
 			if err != nil {
 				logs.Error("update done error", er[i].ID, sei.Email, sei.Displayname)
 			}
