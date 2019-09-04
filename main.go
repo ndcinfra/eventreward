@@ -47,6 +47,8 @@ func GetSendEmailReward() {
 
 		logs.Info("Success MakeCoupon: ", len(rewardsIDs))
 
+		// Step 2
+
 		// get GetSendEmailReward again with serial.
 		eventRewards, err = models.GetSendEmailReward()
 		if err != nil {
@@ -57,13 +59,15 @@ func GetSendEmailReward() {
 		logs.Info("Success ReGetSendEmailReward: ", len(eventRewards))
 
 		// bulk update
-		err = models.UpdateEventRewardsDone(rewardsIDs)
-		if err != nil {
-			logs.Error("Error UpdateEventRewardsDone: ", err)
-			return
-		}
+		/*
+			err = models.UpdateEventRewardsDone(rewardsIDs)
+			if err != nil {
+				logs.Error("Error UpdateEventRewardsDone: ", err)
+				return
+			}
 
-		logs.Info("Success UpdateEventRewardsDone. IDs: ", rewardsIDs)
+			logs.Info("Success UpdateEventRewardsDone. IDs: ", rewardsIDs)
+		*/
 
 		// send email
 		// go libs.MakeEmail(eventRewards)

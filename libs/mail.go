@@ -80,6 +80,12 @@ func MakeEmail(er []models.EventRewards) {
 		if err := d.DialAndSend(m); err != nil {
 			logs.Error("send email error: ", err, sei.Email, sei.Displayname)
 		} else {
+			// DB update
+			err := UpdateEventRewardsDoneOne(er[i].ID)
+			if err != nil {
+				logs.Error("update done error", er[i].ID, sei.Email, sei.Displayname)
+			}
+
 			logs.Info("success send email", sei.Email, sei.Displayname)
 		}
 	}

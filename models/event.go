@@ -174,6 +174,20 @@ func UpdateEventRewardsDone(ids []int) error {
 
 }
 
+func UpdateEventRewardsDoneOne(id int) error {
+
+	o := orm.NewOrm()
+	sql := "UPDATE event_rewards SET is_done = true, send_at = ? where \"ID\" = ?"
+	_, err := o.Raw(sql, time.Now(), id).Exec()
+	if err != nil {
+		logs.Error("error", "Error update done event_rewards: ", err)
+		return err
+	}
+
+	return err
+
+}
+
 func makeSerial() string {
 
 	b := make([]byte, 6) //equals 8 charachters
