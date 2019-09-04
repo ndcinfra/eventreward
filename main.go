@@ -4,7 +4,6 @@ import (
 	"time"
 
 	"github.com/astaxie/beego/logs"
-	"github.com/ndcinfra/eventreward/libs"
 	"github.com/ndcinfra/eventreward/models"
 
 	"github.com/astaxie/beego/orm"
@@ -49,14 +48,18 @@ func GetSendEmailReward() {
 
 		// Step 2
 
-		// get GetSendEmailReward again with serial.
-		eventRewards, err = models.GetSendEmailReward()
-		if err != nil {
-			logs.Error("Error ReGetSendEmailReward: ", err)
-			return
-		}
+		/*
+			// get GetSendEmailReward again with serial.
+			eventRewards, err = models.GetSendEmailReward()
+			if err != nil {
+				logs.Error("Error ReGetSendEmailReward: ", err)
+				return
+			}
 
-		logs.Info("Success ReGetSendEmailReward: ", len(eventRewards))
+			logs.Info("Success ReGetSendEmailReward: ", len(eventRewards))
+
+			libs.MakeEmail(eventRewards)
+		*/
 
 		// bulk update
 		/*
@@ -71,7 +74,6 @@ func GetSendEmailReward() {
 
 		// send email
 		// go libs.MakeEmail(eventRewards)
-		libs.MakeEmail(eventRewards)
 
 	} else {
 		logs.Info("no data GetSendEmailReward")
