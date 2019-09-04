@@ -31,6 +31,11 @@ func MakeEmail(er []models.EventRewards) {
 		logs.Error("Error loading .env file")
 	}
 
+	SMTP := os.Getenv("SMTP")
+	SMTPPORT, _ := strconv.Atoi(os.Getenv("SMTP_PORT"))
+	SMTPID := os.Getenv("SMTPID")
+	SMTPPASS := os.Getenv("SMTPPASS")
+
 	// for loop
 	// TODO: 향후 channel로 변경 한다.
 	// TODO: 포인터 array 이용
@@ -59,7 +64,24 @@ func MakeEmail(er []models.EventRewards) {
 		sei.Mid = er[i].MID
 
 		makeMessage(sei, ms) // attach Eng
-		sendEmail(sei)
+
+		//sendEmail(sei)
+
+		m := gomail.NewMessage()
+		m.SetHeader("From", "th@closerscs.com")
+		m.SetHeader("To", sei.Email)
+		m.SetHeader("Subject", sei.Title)
+		m.SetBody("text/html", sei.Body)
+
+		d := gomail.NewDialer(SMTP, SMTPPORT, SMTPID, SMTPPASS)
+		d.StartTLSPolicy = mail.MandatoryStartTLS
+
+		// Send the email to Bob, Cora and Dan.
+		if err := d.DialAndSend(m); err != nil {
+			logs.Error("send email error: ", err, sei.Email, sei.Displayname)
+		} else {
+			logs.Info("success send email", sei.Email, sei.Displayname)
+		}
 	}
 
 }
