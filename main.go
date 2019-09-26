@@ -96,7 +96,7 @@ func GetSendEmail() {
 
 			go libs.MakeEmailMarketing(r)
 
-			time.Sleep(1 * time.Second)
+			// time.Sleep(1 * time.Second)
 
 			err = models.UpdateEventRewardsDoneOne(r.ID)
 			if err != nil {
