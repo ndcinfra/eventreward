@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"strconv"
@@ -111,6 +112,84 @@ func GetSendEmail() {
 
 }
 
+func GetSendEmail2() {
+	// Step 1
+	// 대상자 가져오기
+	var eventRewards []models.EventRewards
+	eventRewards, err := models.GetSendEmailReward()
+	if err != nil {
+		logs.Error("Error GetSendEmailReward: ", err)
+		return
+	}
+
+	logs.Info("Success GetSendEmail: ", len(eventRewards))
+
+	sender := make(chan models.EventRewards)
+	done := make(chan models.EventRewards)
+
+	go SendMarketingEmail(sender, done)
+	//go UpdateDone(models.EventRewards)
+
+	for {
+		select {
+		case result := <-done:
+			fmt.Println(result.Email, result.ID)
+			// update
+		}
+
+	}
+}
+
+func SendMarketingEmail(erChan chan models.EventRewards, outerChan chan models.EventRewards) {
+	for {
+		time.Sleep(1 * time.Second)
+		er := <-erChan
+
+		inputFile := "./index.html"
+
+		prem, err := premailer.NewPremailerFromFile(inputFile, premailer.NewOptions())
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		html, err := prem.Transform()
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		err = godotenv.Load()
+		if err != nil {
+			logs.Error("Error loading .env file")
+		}
+
+		SMTP := os.Getenv("SMTP")
+		SMTPPORT, _ := strconv.Atoi(os.Getenv("SMTP_PORT"))
+		SMTPID := os.Getenv("SMTPID")
+		SMTPPASS := os.Getenv("SMTPPASS")
+
+		m := gomail.NewMessage()
+		m.SetHeader("From", "th@closerscs.com")
+		m.SetHeader("To", er.Email)
+		m.SetHeader("Subject", "[Closers Thailand] อัพเดทสนามบินนานาชาติ และ ชุดว่ายน้ำสุดคูล")
+		m.SetBody("text/html", html)
+
+		d := gomail.NewDialer(SMTP, SMTPPORT, SMTPID, SMTPPASS)
+		d.StartTLSPolicy = mail.MandatoryStartTLS
+
+		// Send the email to Bob, Cora and Dan.
+		if err := d.DialAndSend(m); err != nil {
+			logs.Error("send email error: ", err)
+		} else {
+			// DB update
+			logs.Info("success send email")
+		}
+
+		outerChan <- er
+		// i++
+	}
+
+}
+
 func TestHerems() {
 	inputFile := "./index.html"
 
@@ -162,11 +241,6 @@ func MakeCoupon(er []models.EventRewards) ([]int, error) {
 	return rewardsIDs, err
 }
 
-// GetGameReward ...
-func GetGameReward() {
-
-}
-
 func init() {
 	models.RegisterDB()
 }
@@ -194,7 +268,9 @@ func main() {
 	// herems test
 	// TestHerems()
 
-	GetSendEmail()
+	// GetSendEmail()
+
+	GetSendEmail2()
 
 	logs.Info("Total Time: ", time.Since(start))
 
