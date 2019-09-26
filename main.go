@@ -52,6 +52,8 @@ func GetSendEmail() {
 	//		2 : 마케팅용 이메일 이다. (inline CSS를 이용한 배너가 이메일로 발송 된다.)
 
 	for _, r := range eventRewards {
+		logs.Info(r.EventRewardType, r.Email)
+
 		switch r.EventRewardType {
 		case 1:
 			//
@@ -90,7 +92,8 @@ func GetSendEmail() {
 				logs.Info("Success UpdateEventRewardsDone. IDs: ", rewardsIDs)
 			*/
 		case 2:
-			libs.MakeEmailMarketing(r)
+			logs.Info("send karketint email: ", r.Email)
+			go libs.MakeEmailMarketing(r)
 		}
 	}
 
