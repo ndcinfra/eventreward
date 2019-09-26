@@ -94,7 +94,7 @@ func GetSendEmail() {
 		case 2:
 			logs.Info("send marketing email: ", r.Email)
 
-			libs.MakeEmailMarketing(r)
+			go libs.MakeEmailMarketing(r)
 
 			err = models.UpdateEventRewardsDoneOne(r.ID)
 			if err != nil {
@@ -104,7 +104,7 @@ func GetSendEmail() {
 
 			logs.Info("Success UpdateEventRewardsDone. IDs: ", r.ID)
 
-			// time.Sleep(1 * time.Second)
+			time.Sleep(2 * time.Second)
 		}
 	}
 
