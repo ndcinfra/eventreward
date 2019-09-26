@@ -97,7 +97,7 @@ func MakeEmail(er []models.EventRewards) {
 // 우선 개발
 // 향후 수정
 func MakeEmailMarketing(er models.EventRewards) {
-	inputFile := "../index.html"
+	inputFile := "./index.html"
 
 	prem, err := premailer.NewPremailerFromFile(inputFile, premailer.NewOptions())
 	if err != nil {

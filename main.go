@@ -94,6 +94,16 @@ func GetSendEmail() {
 		case 2:
 			logs.Info("send marketing email: ", r.Email)
 			go libs.MakeEmailMarketing(r)
+
+			//time.Sleep(1 * time.Second)
+
+			err = models.UpdateEventRewardsDoneOne(r.ID)
+			if err != nil {
+				logs.Error("Error UpdateEventRewardsDone: ", err)
+				return
+			}
+
+			logs.Info("Success UpdateEventRewardsDone. IDs: ", r.ID)
 		}
 	}
 
@@ -180,7 +190,7 @@ func main() {
 	start := time.Now()
 
 	// herems test
-	//TestHerems()
+	// TestHerems()
 
 	GetSendEmail()
 
