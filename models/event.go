@@ -88,7 +88,7 @@ func GetSendEmailReward() ([]EventRewards, error) {
 		" \"PayItemID\" " +
 		" FROM event_rewards " +
 		" WHERE is_done = false " +
-		" AND event_reward_type = 1 " + // 1: send email with cououpon serial
+		// " AND event_reward_type = 1 " + // 1: send email with cououpon serial
 		" order by create_at asc " // +
 		// " limit 50 "
 

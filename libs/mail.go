@@ -1,6 +1,7 @@
 package libs
 
 import (
+	"log"
 	"os"
 	"strconv"
 
@@ -11,6 +12,7 @@ import (
 	"github.com/joho/godotenv"
 
 	"github.com/ndcinfra/eventreward/models"
+	"github.com/vanng822/go-premailer/premailer"
 )
 
 type SendEmailInfo struct {
@@ -90,6 +92,49 @@ func MakeEmail(er []models.EventRewards) {
 		}
 	}
 
+}
+
+// 우선 개발
+// 향후 수정
+func MakeEmailMarketing(er models.EventRewards) {
+	inputFile := "../index.html"
+
+	prem, err := premailer.NewPremailerFromFile(inputFile, premailer.NewOptions())
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	html, err := prem.Transform()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = godotenv.Load()
+	if err != nil {
+		logs.Error("Error loading .env file")
+	}
+
+	SMTP := os.Getenv("SMTP")
+	SMTPPORT, _ := strconv.Atoi(os.Getenv("SMTP_PORT"))
+	SMTPID := os.Getenv("SMTPID")
+	SMTPPASS := os.Getenv("SMTPPASS")
+
+	m := gomail.NewMessage()
+	m.SetHeader("From", "th@closerscs.com")
+	m.SetHeader("To", er.Email)
+	m.SetHeader("Subject", "[Closers Thailand] อัพเดทสนามบินนานาชาติ และ ชุดว่ายน้ำสุดคูล")
+	m.SetBody("text/html", html)
+
+	d := gomail.NewDialer(SMTP, SMTPPORT, SMTPID, SMTPPASS)
+	d.StartTLSPolicy = mail.MandatoryStartTLS
+
+	// Send the email to Bob, Cora and Dan.
+	if err := d.DialAndSend(m); err != nil {
+		logs.Error("send email error: ", err)
+	} else {
+		// DB update
+		logs.Info("success send email")
+	}
 }
 
 func makeMessage(e *SendEmailInfo, ms *models.EmailMessage) {
