@@ -177,9 +177,9 @@ func main() {
 	start := time.Now()
 
 	// herems test
-	TestHerems()
+	//TestHerems()
 
-	// GetSendEmail()
+	GetSendEmail()
 
 	logs.Info("Total Time: ", time.Since(start))
 
