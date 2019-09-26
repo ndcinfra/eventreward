@@ -90,7 +90,7 @@ func GetSendEmail() {
 				logs.Info("Success UpdateEventRewardsDone. IDs: ", rewardsIDs)
 			*/
 		case 2:
-			go libs.MakeEmailMarketing(r)
+			libs.MakeEmailMarketing(r)
 		}
 	}
 
