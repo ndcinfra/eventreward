@@ -93,7 +93,7 @@ func GetSendEmail() {
 			*/
 		case 2:
 			logs.Info("send marketing email: ", r.Email)
-			libs.MakeEmailMarketing(r)
+			go libs.MakeEmailMarketing(r)
 		}
 	}
 
