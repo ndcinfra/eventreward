@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"strconv"
@@ -125,67 +124,66 @@ func GetSendEmail2() {
 	logs.Info("Success GetSendEmail: ", len(eventRewards))
 
 	sender := make(chan models.EventRewards)
-	done := make(chan models.EventRewards)
+	// doneSend := make(chan models.EventRewards)
 
-	go SendMarketingEmail(sender, done)
+	go SendMarketingEmail(sender)
 	//go UpdateDone(models.EventRewards)
 
-	for {
-		select {
-		case result := <-done:
-			fmt.Println(result.Email, result.ID)
-			// update
-		}
-
+	for _, ser := range eventRewards {
+		sender <- ser
 	}
+
+	/*
+		for {
+			result := <-doneSend
+			fmt.Println(result.Email, result.ID)
+		}
+	*/
 }
 
-func SendMarketingEmail(erChan chan models.EventRewards, outerChan chan models.EventRewards) {
+func SendMarketingEmail(erChan chan models.EventRewards) {
+	logs.Info("call SendMarketingEmail")
+
+	inputFile := "./index.html"
+
+	prem, err := premailer.NewPremailerFromFile(inputFile, premailer.NewOptions())
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	html, err := prem.Transform()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = godotenv.Load()
+	if err != nil {
+		logs.Error("Error loading .env file")
+	}
+
+	SMTP := os.Getenv("SMTP")
+	SMTPPORT, _ := strconv.Atoi(os.Getenv("SMTP_PORT"))
+	SMTPID := os.Getenv("SMTPID")
+	SMTPPASS := os.Getenv("SMTPPASS")
+
+	m := gomail.NewMessage()
+	m.SetHeader("From", "th@closerscs.com")
+	m.SetHeader("Subject", "[Closers Thailand] อัพเดทสนามบินนานาชาติ และ ชุดว่ายน้ำสุดคูล")
+	m.SetBody("text/html", html)
+
 	for {
-		time.Sleep(1 * time.Second)
+
 		er := <-erChan
+		logs.Info(er.Email)
 
-		inputFile := "./index.html"
-
-		prem, err := premailer.NewPremailerFromFile(inputFile, premailer.NewOptions())
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		html, err := prem.Transform()
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		err = godotenv.Load()
-		if err != nil {
-			logs.Error("Error loading .env file")
-		}
-
-		SMTP := os.Getenv("SMTP")
-		SMTPPORT, _ := strconv.Atoi(os.Getenv("SMTP_PORT"))
-		SMTPID := os.Getenv("SMTPID")
-		SMTPPASS := os.Getenv("SMTPPASS")
-
-		m := gomail.NewMessage()
-		m.SetHeader("From", "th@closerscs.com")
 		m.SetHeader("To", er.Email)
-		m.SetHeader("Subject", "[Closers Thailand] อัพเดทสนามบินนานาชาติ และ ชุดว่ายน้ำสุดคูล")
-		m.SetBody("text/html", html)
 
 		d := gomail.NewDialer(SMTP, SMTPPORT, SMTPID, SMTPPASS)
 		d.StartTLSPolicy = mail.MandatoryStartTLS
 
-		// Send the email to Bob, Cora and Dan.
-		if err := d.DialAndSend(m); err != nil {
-			logs.Error("send email error: ", err)
-		} else {
-			// DB update
-			logs.Info("success send email")
-		}
+		go d.DialAndSend(m)
 
-		outerChan <- er
-		// i++
+		time.Sleep(1 * time.Second)
 	}
 
 }
@@ -251,6 +249,7 @@ func main() {
 	//orm.RunSyncdb("default", false, true)
 
 	//logging
+
 	logs.SetLogger(logs.AdapterFile, `{"filename":"./logs/project.log","level":7,"maxlines":0,"maxsize":0,"daily":true,"maxdays":30,"color":true}`)
 
 	// logs.Error("test")
@@ -268,9 +267,9 @@ func main() {
 	// herems test
 	// TestHerems()
 
-	// GetSendEmail()
+	GetSendEmail()
 
-	GetSendEmail2()
+	//GetSendEmail2()
 
 	logs.Info("Total Time: ", time.Since(start))
 
